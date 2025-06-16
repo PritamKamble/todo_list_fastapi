@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 class LoginBody(BaseModel):
     email: str
@@ -7,9 +9,11 @@ class LoginBody(BaseModel):
 
 app = FastAPI()
 
-@app.get("/hello")
-def read_root():
-    return { "msg": "Hello, World!" }
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get('/')
+def index():
+    return FileResponse('static/index.html')
 
 @app.get('/add/{no1}/{no2}')
 def add(no1: int, no2: int):
